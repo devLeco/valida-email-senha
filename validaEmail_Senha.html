@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Q2 2019.1 plus validação email</title>
+    <script>
+        function pegaLoginESenha() {
+            let login=document.getElementById("login").value;
+            let senha=document.getElementById("senha").value;
+            document.getElementById("forca").innerHTML=forcaSenha(senha);
+            document.getElementById("email").innerText=verificaLogin(login);
+
+        }
+
+        function verificaLogin(field) { // string do email é dividida em antes do @ e após @
+            let usuario=field.substring(0,field.indexOf("@")); // antes do @ a.k.a usuário
+            let dominio=field.substring(field.indexOf("@")+1,field.length); // após o @ ; dominio
+            let mensagem="";
+
+             if((usuario.length>=1) &&  // pelo menos um caracter antes do @
+                 (dominio.length>=3) &&  // pelo menos 3 cararcteres após o @
+                 (usuario.search("@")==-1) &&  //verificar se não há @  na parte do usuário
+                 (usuario.search(" ")==-1) && //verifica se não há espaços em branco no usuário
+                 (dominio.search(" ")==-1) &&  //verifica se não há espaços em branco no dominio
+                 (dominio.search(".")!=-1) &&  //dominio tem que possuir ponto
+                 (dominio.indexOf(".")>=1) && // a posição do primeiro ponto tem que ser >=1 ,a posição 0 deve ser ocupada por algum outro caracter após o @
+                (dominio.lastIndexOf(".")<dominio.length-1)){ //a posição do ultimo ponto tem que ser menor que a do ultimo carcacter, o domínio deve ser finalizado por um caracter
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+
+        function forcaSenha(senha) {
+            let forca="";
+            let criteriosSatisfeitos=0;
+            let numeros=0;
+            let maiusculas=0;
+            let minusculas=0;
+            let simbolos=0;
+
+            if(senha.length>=8){
+                criteriosSatisfeitos++;
+            }
+            for(let i=0;i<senha.length;i++){    // verificando conteudo da senha
+                let codigo=senha.charCodeAt(i);
+
+                if(codigo>=48 && codigo<=57){
+                    numeros++;
+                }
+                else if(codigo>=65 && codigo<=90){
+                    maiusculas++;
+                }
+                else if(codigo>=97 && codigo<=122){
+                    minusculas++;
+                }
+                else simbolos++;
+            }
+            if(maiusculas>0){
+                criteriosSatisfeitos++;
+            }
+            if(minusculas>0){
+                criteriosSatisfeitos++;
+            }
+            if(numeros>0){
+                criteriosSatisfeitos++;
+            }
+            if(simbolos>0){
+                criteriosSatisfeitos++;
+            }
+
+            if(criteriosSatisfeitos<=2){
+                forca="Senha fraca"
+            }
+            else if(criteriosSatisfeitos <=4){
+                forca="Senha média"
+            }
+            else forca="Senha forte"
+
+            return forca;
+        }
+    </script>
+</head>
+<body>
+
+<form name="f1">
+    <p>Digite o seu email:</p><input type="text" name="email" id="login">
+    <p>Digite uma senha:</p><input type="text" name="senha"  id="senha">
+    <input type="button" onclick="pegaLoginESenha()" value="enviar">
+    <div id="email"></div>
+    <div id="forca"></div>
+</form>
+
+</body>
+</html>
